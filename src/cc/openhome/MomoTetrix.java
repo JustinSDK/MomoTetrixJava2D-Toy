@@ -12,6 +12,7 @@ public class MomoTetrix extends JFrame {
     private TetrixBox tetrixBox;
     private TetrixGround tetrixGround;
     private JLabel levelLabel, lineLabel, scoreLabel;
+    private JLabel topLevelLabel, topLineLabel, topScoreLabel;
     private TetrixStackArea stackArea;
     private JTextField keyFocus;
     private JButton newGameBtn, pauseBtn;
@@ -72,11 +73,11 @@ public class MomoTetrix extends JFrame {
         scorePanel.setLocation(2, 150);
         scorePanel.setSize(tetrixBox.getWidth() + 20, tetrixBox.getHeight());
         scorePanel.setBorder(BorderFactory.createTitledBorder("Oh..."));
-        scorePanel.add(new JLabel("�@Level�@"));
+        scorePanel.add(new JLabel("　Level　"));
         scorePanel.add(levelLabel = new JLabel(level+""));
-        scorePanel.add(new JLabel("�@Line�@  "));
+        scorePanel.add(new JLabel("　Line　  "));
         scorePanel.add(lineLabel = new JLabel(tetrixGround.getRemovedLines()+""));
-        scorePanel.add(new JLabel("�@Score�@"));
+        scorePanel.add(new JLabel("　Score　"));
         scorePanel.add(scoreLabel = new JLabel(tetrixGround.getScore()+""));
         
         this.getContentPane().add(scorePanel);
@@ -95,6 +96,20 @@ public class MomoTetrix extends JFrame {
         btnPanel.add(pauseBtn);
         
         this.getContentPane().add(btnPanel);
+        
+        JPanel topPanel = new JPanel();
+        topPanel.setSize(tetrixBox.getWidth() + 20, tetrixBox.getHeight());
+        topPanel.setBorder(BorderFactory.createTitledBorder("Top One"));
+        topPanel.setLocation(2, 390);
+        
+        topPanel.add(new JLabel("　Level　"));
+        topPanel.add(topLevelLabel = new JLabel(level+""));
+        topPanel.add(new JLabel("　Line　  "));
+        topPanel.add(topLineLabel = new JLabel(tetrixGround.getRemovedLines()+""));
+        topPanel.add(new JLabel("　Score　"));
+        topPanel.add(topScoreLabel = new JLabel(tetrixGround.getScore()+""));
+        
+        this.getContentPane().add(topPanel);
         
         JPanel stackAreaPanel = new JPanel();
         stackAreaPanel.setLayout(null); 
