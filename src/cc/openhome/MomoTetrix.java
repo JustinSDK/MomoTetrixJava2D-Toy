@@ -1,12 +1,16 @@
 package cc.openhome;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-
 import cc.openhome.component.TetrixBox;
 import cc.openhome.component.TetrixStackArea;
 import cc.openhome.tetrix.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import javax.swing.*;
+
 
 public class MomoTetrix extends JFrame {
     private TetrixBox tetrixBox;
@@ -25,17 +29,19 @@ public class MomoTetrix extends JFrame {
     private int speed = 1000;
     
     private Thread gameThread;
+    
+    private Path top = Paths.get("top.txt");
+    private int topLevel, topLine, topScore;
 
-    public MomoTetrix() {
+    public MomoTetrix() throws IOException {
         super("Momo Tetrix");
         initResource();
         setupUIComponent();
         setupEventListener();
         setVisible(true);
-        
     }
 
-    public void initResource() {
+    public void initResource() throws IOException {
         logoIcon = new ImageIcon(MomoTetrix.class.getResource("logo.jpg"));
         
         Image[] images = new Image[7];
@@ -53,6 +59,11 @@ public class MomoTetrix extends JFrame {
         stackArea = new TetrixStackArea(tetrixBox, tetrixGround);
         
         tetrixBox.generate();
+        
+        String[] topData = Files.readAllLines(top).get(0).split(",");
+        topLevel = Integer.parseInt(topData[0]);
+        topLine = Integer.parseInt(topData[1]);
+        topScore = Integer.parseInt(topData[2]);
     }
     
     public void setupUIComponent() {
@@ -103,11 +114,11 @@ public class MomoTetrix extends JFrame {
         topPanel.setLocation(2, 390);
         
         topPanel.add(new JLabel("　Level　"));
-        topPanel.add(topLevelLabel = new JLabel(level+""));
+        topPanel.add(topLevelLabel = new JLabel(String.valueOf(topLevel)));
         topPanel.add(new JLabel("　Line　  "));
-        topPanel.add(topLineLabel = new JLabel(tetrixGround.getRemovedLines()+""));
+        topPanel.add(topLineLabel = new JLabel(String.valueOf(topLine)));
         topPanel.add(new JLabel("　Score　"));
-        topPanel.add(topScoreLabel = new JLabel(tetrixGround.getScore()+""));
+        topPanel.add(topScoreLabel = new JLabel(String.valueOf(topScore)));
         
         this.getContentPane().add(topPanel);
         
@@ -255,7 +266,7 @@ public class MomoTetrix extends JFrame {
         });
     }
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         new MomoTetrix();
     }
 }
