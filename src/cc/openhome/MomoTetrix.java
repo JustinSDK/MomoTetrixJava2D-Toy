@@ -186,54 +186,47 @@ public class MomoTetrix extends JFrame {
                 }
         );
 
-        newGameBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                isRestart = true;
-                keyFocus.requestFocus();
-
-                // wait for 1 seconds to end the previous game
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
-                }
-
-                gameThread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        gameLoop();
-                        writeTopIfGameOver();
-                    }
-                });
-
-                level = 1;
-                speed = 1000;
-                tetrixGround.reset();
-                levelLabel.setText(String.valueOf(level));
-                lineLabel.setText(String.valueOf(tetrixGround.getRemovedLines()));
-                scoreLabel.setText(String.valueOf(tetrixGround.getScore()));
-
-                isRestart = false;
-                gameThread.start();
+        newGameBtn.addActionListener(e -> {
+            isRestart = true;
+            keyFocus.requestFocus();
+            
+            // wait for 1 seconds to end the previous game
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
             }
+            
+            gameThread = new Thread(() -> {
+                gameLoop();
+                writeTopIfGameOver();
+            });
+            
+            level = 1;
+            speed = 1000;
+            tetrixGround.reset();
+            levelLabel.setText(String.valueOf(level));
+            lineLabel.setText(String.valueOf(tetrixGround.getRemovedLines()));
+            scoreLabel.setText(String.valueOf(tetrixGround.getScore()));
+            
+            isRestart = false;
+            gameThread.start();
         });
 
-        pauseBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                isPause = true;
-                JOptionPane.showOptionDialog(null,
-                        "It's only for fun.... :)\n"
-                        + "http://openhome.cc",
-                        "About Momo Tetrix",
-                        JOptionPane.DEFAULT_OPTION,
-                        JOptionPane.INFORMATION_MESSAGE,
-                        logoIcon, null, null);
-                keyFocus.requestFocus();
-
-                isPause = false;
-
-                gameThread.interrupt();
-            }
+        pauseBtn.addActionListener(e -> {
+            isPause = true;
+            JOptionPane.showOptionDialog(null,
+                    "It's only for fun.... :)\n"
+                            + "http://openhome.cc",
+                    "About Momo Tetrix",
+                    JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.INFORMATION_MESSAGE,
+                    logoIcon, null, null);
+            keyFocus.requestFocus();
+            
+            isPause = false;
+            
+            gameThread.interrupt();
         });
     }
 
@@ -278,7 +271,6 @@ public class MomoTetrix extends JFrame {
             if (speed > 200) {
                 speed -= 100;
             }
-
             levelLabel.setText(String.valueOf(level));
         }
     }
