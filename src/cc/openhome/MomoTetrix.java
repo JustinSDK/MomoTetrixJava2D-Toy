@@ -41,7 +41,7 @@ public class MomoTetrix extends JFrame {
         setVisible(true);
     }
 
-    public void initResource() throws IOException {
+    public final void initResource() throws IOException {
         logoIcon = new ImageIcon(MomoTetrix.class.getResource("logo.jpg"));
         
         Image[] images = new Image[7];
@@ -66,7 +66,7 @@ public class MomoTetrix extends JFrame {
         topScore = Integer.parseInt(topData[2]);
     }
     
-    public void setupUIComponent() {
+    public final void setupUIComponent() {
         this.getContentPane().setLayout(null);
         
         JPanel nextPiecePanel = new JPanel();
@@ -191,6 +191,7 @@ public class MomoTetrix extends JFrame {
                 }
                 
                 gameThread = new Thread(new Runnable() {
+                    @Override
                     public void run() {
                         while(!tetrixGround.isGameover() && !isRestart) {
                             if(!isPause) {
@@ -212,7 +213,7 @@ public class MomoTetrix extends JFrame {
                                         if(speed > 200)
                                             speed -= 100;
                                         
-                                        levelLabel.setText(level+"");
+                                        levelLabel.setText(String.valueOf(level));
                                     }
                                     
                                     Thread.sleep(speed);
@@ -238,9 +239,9 @@ public class MomoTetrix extends JFrame {
                 level = 1;
                 speed = 1000;
                 tetrixGround.reset();
-                levelLabel.setText(level+"");
-                lineLabel.setText(tetrixGround.getRemovedLines()+"");
-                scoreLabel.setText(tetrixGround.getScore()+"");
+                levelLabel.setText(String.valueOf(level));
+                lineLabel.setText(String.valueOf(tetrixGround.getRemovedLines()));
+                scoreLabel.setText(String.valueOf(tetrixGround.getScore()));
                 
                 isRestart = false;
                 gameThread.start();
