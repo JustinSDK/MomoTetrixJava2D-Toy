@@ -202,8 +202,8 @@ public class MomoTetrix extends JFrame {
                                     if(!tetrixGround.isMovable(0, 1)){ 
                                         tetrixGround.addPieceOfType(tetrixBox.getTetrixPiece().getType());
                                         tetrixBox.generate();
-                                        lineLabel.setText(tetrixGround.getRemovedLines()+"");
-                                        scoreLabel.setText(tetrixGround.getScore()+"");
+                                        lineLabel.setText(String.valueOf(tetrixGround.getRemovedLines()));
+                                        scoreLabel.setText(String.valueOf(tetrixGround.getScore()));
                                     }
 
                                     stackArea.repaint();
