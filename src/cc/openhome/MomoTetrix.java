@@ -13,8 +13,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 import static java.nio.file.StandardOpenOption.WRITE;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 
 public class MomoTetrix extends JFrame {
@@ -203,45 +201,8 @@ public class MomoTetrix extends JFrame {
                 gameThread = new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        while (!tetrixGround.isGameover() && !isRestart) {
-                            if (!isPause) {
-                                try {
-                                    tetrixGround.moveTetrixDown();
-                                    tetrixGround.updateGround();
-
-                                    if (!tetrixGround.isMovable(0, 1)) {
-                                        tetrixGround.addPieceOfType(tetrixBox.getTetrixPiece().getType());
-                                        tetrixBox.generate();
-                                        lineLabel.setText(String.valueOf(tetrixGround.getRemovedLines()));
-                                        scoreLabel.setText(String.valueOf(tetrixGround.getScore()));
-                                    }
-
-                                    stackArea.repaint();
-
-                                    if ((tetrixGround.getScore() / 50) > (level - 1)) {
-                                        level++;
-                                        if (speed > 200) {
-                                            speed -= 100;
-                                        }
-
-                                        levelLabel.setText(String.valueOf(level));
-                                    }
-
-                                    Thread.sleep(speed);
-                                } catch (InterruptedException ex) {
-                                    ex.printStackTrace();
-                                }
-                            } else {
-                                try {
-                                    synchronized (this) {
-                                        wait();
-                                    }
-                                } catch (InterruptedException ex) {
-                                    ex.printStackTrace();
-                                }
-                            }
-                        }
-                         writeTopIfGameOver();
+                        gameLoop();
+                        writeTopIfGameOver();
                     }
                 });
 
@@ -276,13 +237,70 @@ public class MomoTetrix extends JFrame {
         });
     }
 
+    private void gameLoop() {
+        while (!tetrixGround.isGameover() && !isRestart) {
+            if (isPause) {
+                pauseGame();
+            } else {
+                continueGame();
+            }
+        }
+    }
+
+    private void continueGame() {
+        try {
+            tetrixGround.moveTetrixDown();
+            tetrixGround.updateGround();
+            
+            nextTetrixIfPossible();
+            
+            levelUpIfCond();
+            
+            Thread.sleep(speed);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void pauseGame() {
+        try {
+            synchronized (this) {
+                wait();
+            }
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void levelUpIfCond() {
+        if ((tetrixGround.getScore() / 50) > (level - 1)) {
+            level++;
+            if (speed > 200) {
+                speed -= 100;
+            }
+
+            levelLabel.setText(String.valueOf(level));
+        }
+    }
+
+    private void nextTetrixIfPossible() {
+        if (!tetrixGround.isMovable(0, 1)) {
+            tetrixGround.addPieceOfType(tetrixBox.getTetrixPiece().getType());
+            tetrixBox.generate();
+            lineLabel.setText(String.valueOf(tetrixGround.getRemovedLines()));
+            scoreLabel.setText(String.valueOf(tetrixGround.getScore()));
+        }
+
+        stackArea.repaint();
+    }
+
     private void writeTopIfGameOver() {
         if (tetrixGround.isGameover() && tetrixGround.getScore() > topScore) {
             topLevelLabel.setText(String.valueOf(level));
             topLineLabel.setText(String.valueOf(tetrixGround.getRemovedLines()));
             topScoreLabel.setText(String.valueOf(tetrixGround.getScore()));
             String data = String.format("%d,%d,%d", level, tetrixGround.getRemovedLines(), tetrixGround.getScore());
-            try(BufferedWriter writer = Files.newBufferedWriter(top, WRITE, TRUNCATE_EXISTING)) {
+            try (BufferedWriter writer = Files.newBufferedWriter(top, WRITE, TRUNCATE_EXISTING)) {
                 writer.write(data, 0, data.length());
             } catch (IOException ex) {
                 throw new UncheckedIOException(ex);
