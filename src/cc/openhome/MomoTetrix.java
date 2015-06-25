@@ -85,11 +85,11 @@ public class MomoTetrix extends JFrame {
         scorePanel.setSize(tetrixBox.getWidth() + 20, tetrixBox.getHeight());
         scorePanel.setBorder(BorderFactory.createTitledBorder("Oh..."));
         scorePanel.add(new JLabel("　Level　"));
-        scorePanel.add(levelLabel = new JLabel(level+""));
+        scorePanel.add(levelLabel = new JLabel(String.valueOf(level)));
         scorePanel.add(new JLabel("　Line　  "));
-        scorePanel.add(lineLabel = new JLabel(tetrixGround.getRemovedLines()+""));
+        scorePanel.add(lineLabel = new JLabel(String.valueOf(tetrixGround.getRemovedLines())));
         scorePanel.add(new JLabel("　Score　"));
-        scorePanel.add(scoreLabel = new JLabel(tetrixGround.getScore()+""));
+        scorePanel.add(scoreLabel = new JLabel(String.valueOf(tetrixGround.getScore())));
         
         this.getContentPane().add(scorePanel);
         
