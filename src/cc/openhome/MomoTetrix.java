@@ -213,7 +213,7 @@ public class MomoTetrix extends JFrame {
             isRestart = false;
             gameThread.start();
         });
-
+        
         pauseBtn.addActionListener(e -> {
             isPause = true;
             JOptionPane.showOptionDialog(null,
@@ -227,7 +227,9 @@ public class MomoTetrix extends JFrame {
             
             isPause = false;
             
-            gameThread.interrupt();
+            synchronized (this) {
+                MomoTetrix.this.notifyAll();
+            }
         });
     }
 
