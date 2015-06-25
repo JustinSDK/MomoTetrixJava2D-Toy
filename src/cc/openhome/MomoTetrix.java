@@ -6,14 +6,10 @@ import cc.openhome.io.IOUtil;
 import cc.openhome.tetrix.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
-import static java.nio.file.StandardOpenOption.WRITE;
 import javax.swing.*;
 
 public class MomoTetrix extends JFrame {
@@ -35,7 +31,7 @@ public class MomoTetrix extends JFrame {
 
     private Thread gameThread;
 
-    private Path top = Paths.get("top.txt");
+    private Path top = Paths.get("top.txt");    
     private int topLevel, topLine, topScore;
 
     public MomoTetrix() throws IOException {
@@ -70,6 +66,8 @@ public class MomoTetrix extends JFrame {
         topLevel = topData[0];
         topLine = topData[1];
         topScore = topData[2];
+        
+        IOUtil.player(new File("bkMusic.mid").toURI().toURL()).start();
     }
 
     public final void setupUIComponent() {
