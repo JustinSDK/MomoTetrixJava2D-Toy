@@ -2,6 +2,7 @@ package cc.openhome;
 
 import cc.openhome.component.TetrixBox;
 import cc.openhome.component.TetrixStackArea;
+import cc.openhome.io.IOUtil;
 import cc.openhome.tetrix.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -65,10 +66,10 @@ public class MomoTetrix extends JFrame {
 
         tetrixBox.generate();
 
-        String[] topData = Files.readAllLines(top).get(0).split(",");
-        topLevel = Integer.parseInt(topData[0]);
-        topLine = Integer.parseInt(topData[1]);
-        topScore = Integer.parseInt(topData[2]);
+        int[] topData = IOUtil.readTop(top);
+        topLevel = topData[0];
+        topLine = topData[1];
+        topScore = topData[2];
     }
 
     public final void setupUIComponent() {
@@ -292,13 +293,10 @@ public class MomoTetrix extends JFrame {
             topLineLabel.setText(String.valueOf(tetrixGround.getRemovedLines()));
             topScoreLabel.setText(String.valueOf(tetrixGround.getScore()));
             String data = String.format("%d,%d,%d", level, tetrixGround.getRemovedLines(), tetrixGround.getScore());
-            try (BufferedWriter writer = Files.newBufferedWriter(top, WRITE, TRUNCATE_EXISTING)) {
-                writer.write(data, 0, data.length());
-            } catch (IOException ex) {
-                throw new UncheckedIOException(ex);
-            }
+            IOUtil.writeTop(top, data);
         }
     }
+
 
     public static void main(String[] args) throws IOException {
         new MomoTetrix();
